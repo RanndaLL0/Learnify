@@ -1,15 +1,43 @@
-import { useEffect, useState } from "react";
-import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter";
+import { useEffect, useReducer} from "react";
 import { Container, Title, LoginContainer, InputArea, LoginButton, Text, LoginText, SignUpContainer, SignUpText } from './styles'
 import { TextInput } from "react-native-paper";
 import { Pressable, useColorScheme } from "react-native";
 
-export default function Login() {
+type State = {
+    userName: string,
+    password: string
+}
+
+type Action = | { type: "setUsername", text: string } | { type: "setPassword" , text: string}
+
+const initializeState: State = {
+    userName: "",
+    password: ""
+}
+
+function reducer(state: State, action: Action) {
+    switch (action.type) {
+        case "setUsername":
+            return { userName: action.text, password: state.password }
+        case "setPassword":
+            return { userName: state.userName, password: action.text }
+        default:
+            return state;
+    }
+}
+
+export default function Login({navigation}: any) {
 
     const deviceTheme = useColorScheme();
+    const [state,dispatch] = useReducer(reducer,initializeState);
     const paperTheme = deviceTheme === "dark" ?
-        { backGroundColor: "#1E1E1E", color: "white" } :
-        { backGroundColor: "white", color: "black" }
+        { backgroundColor: "#1E1E1E", color: "white" } :
+        { backgroundColor: "white", color: "black" }
+
+
+    useEffect(() => {
+        console.log("Estado atual:", state);
+    }, [state]);
 
     return (
         <Container>
@@ -18,21 +46,28 @@ export default function Login() {
                 <Title>Welcome!</Title>
                 <InputArea>
 
-                    <TextInput label={"E-mail"} textColor={paperTheme.color}
+                    <TextInput 
+                        value={state.userName} 
+                        onChangeText={(text) => dispatch({type: "setUsername",text: text})}
+                        label={"E-mail"} textColor={paperTheme.color}
                         theme={{ colors: { primary: paperTheme.color} }}
-                        style={{ backgroundColor: paperTheme.backGroundColor, color: paperTheme.color }} />
+                        style={{ backgroundColor: paperTheme.backgroundColor, color: paperTheme.color }} />
 
-                    <TextInput label={"Password"} textColor={paperTheme.color}
+                    <TextInput
+                        secureTextEntry={true} 
+                        value={state.password} 
+                        onChangeText={(text) => dispatch({type: "setPassword",text: text})}
+                        label={"Password"} textColor={paperTheme.color}
                         theme={{ colors: { primary: paperTheme.color} }}
-                        style={{ backgroundColor: paperTheme.backGroundColor, color: paperTheme.color }} />
+                        style={{ backgroundColor: paperTheme.backgroundColor, color: paperTheme.color }} />
 
                 </InputArea>
                 <LoginButton
-                    onPress={() => alert('Pressed!')}>
+                    onPress={() => navigation.push('Home')}>
                     <LoginText> Log In </LoginText>
                 </LoginButton>
                 <Pressable>
-                    <Text style={{ textAlign: "center", color: (props: { theme: { loginText: string; }; }) => props.theme.loginText }}>Forgot Password?</Text>
+                    <Text style={{ textAlign: "center", color: paperTheme.color }}>Forgot Password?</Text>
                 </Pressable>
             </LoginContainer>
             <SignUpContainer>
@@ -40,7 +75,6 @@ export default function Login() {
                     SignUp
                 </SignUpText>
             </SignUpContainer>
-
         </Container>
     )
 }

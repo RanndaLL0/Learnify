@@ -3,5 +3,7 @@ export const dark = {
     fontColor: 'white',
     loginText: "white",
     loginInputBackground: "#1E1E1E",
-    SignUp: "white"
+    SignUp: "white",
+    homeTitle: "white",
+    cardBackground: "#20201F"
 }
