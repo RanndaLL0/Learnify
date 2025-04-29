@@ -25,6 +25,7 @@ export default function App() {
           <Stack.Screen
             name="Home" component={Home} 
             options={{headerShown: false}}/>
+
             <Stack.Screen
             name="Book" component={BookPage}
             options={{
@@ -41,6 +42,7 @@ export default function App() {
                 <Feather name="square" size={28} style={{marginRight: 10}} color="white" />
               )
             }} />
+            
         </Stack.Navigator>
       </ThemeProvider>
     </NavigationContainer>
